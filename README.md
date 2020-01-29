@@ -1,3 +1,14 @@
+# Repo Fork to showcase usage of MADDPG algorithm applied to traffic light grid environmet.
+
+* [Training Configuration for MADDPG](xy)
+* Command to start MADDPG training (within /examples dir): python train_maddpg.py multiagent_maddpg
+* [Training Configuration for DDPG for comparison](yz)
+* Command to start DDPG training (within /examples dir): python train_ddpg.py multiagent_ddpg
+
+
+
+
+
 <img src="docs/img/square_logo.png" align="right" width="25%"/>
 
 [![Build Status](https://travis-ci.com/flow-project/flow.svg?branch=master)](https://travis-ci.com/flow-project/flow)
