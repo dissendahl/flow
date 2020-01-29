@@ -2,7 +2,7 @@
 
 Hi there. This folk exists to demonstrate how the MADDPG implementation in rllib/contrib results in no learning when applied to a specific environment. To give some context: The flow project links traffic simulators with Rllib to setup RL based experiments to investigate with autonomous vehicles or traffic lights (More to see below in the original description). 
 
-I want to apply MADDPG to an environment called traffic-light-grid in which RL traffic lights learn to route the traffic efficiently. They share the reward, the cumulative delay of all cars throughout the simulation steps in a fully cooperative manner. When I employ PPO or DDPG both algorithms learn how to route the traffic quite efficiently, while MADDPG does not. 
+I want to apply MADDPG to an environment called traffic-light-grid in which RL traffic lights learn to route the traffic efficiently. They share the reward, the cumulative delay of all cars throughout the simulation steps in a fully cooperative manner. When I employ PPO or DDPG both algorithms learn how to route the traffic in one way or another, while MADDPG does not show any learning. 
 [Here](https://github.com/dissendahl/flow/tree/master/learning_curves) you can see the learning curves.
 
 So something with the experiment configuration or the contrib/MADDPG implementation must be off. 
