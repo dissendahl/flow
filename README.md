@@ -1,13 +1,26 @@
-# Repo Fork to showcase usage of MADDPG algorithm applied to traffic light grid environmet.
+# Repo Fork to demonstrate problem of MADDPG algorithm applied to traffic light grid environmet.
 
-* [Training Configuration for MADDPG](xy)
-* Command to start MADDPG training (within /examples dir): python train_maddpg.py multiagent_maddpg
-* [Training Configuration for DDPG for comparison](yz)
-* Command to start DDPG training (within /examples dir): python train_ddpg.py multiagent_ddpg
+Hi there. This folk exists to demonstrate how the MADDPG implementation in rllib/contrib results in no learning when applied to a specific environment. To give some context: The flow project links traffic simulators with Rllib to setup RL based experiments to investigate with autonomous vehicles or traffic lights (More to see below in the original description). 
+
+I want to apply MADDPG to an environment called traffic-light-grid in which RL traffic lights learn to route the traffic efficiently. They share the reward, the cumulative delay of all cars throughout the simulation steps in a fully cooperative manner. When I employ PPO or DDPG both algorithms learn how to route the traffic in one way or another, while MADDPG does not show any learning. 
+[Here](https://github.com/dissendahl/flow/tree/master/learning_curves) you can see the learning curves.
+
+So something with the experiment configuration or the contrib/MADDPG implementation must be off. 
+Here are the experiment configs and how to execute them:
+
+* [My training config for MADDPG -> this one does not learn at all](https://github.com/dissendahl/flow/blob/master/examples/exp_configs/rl/multiagent/multiagent_maddpg.py)
+* Command to start MADDPG training (executed from within /examples dir): python train_maddpg.py multiagent_maddpg
+* [My training configuration for DDPG for comparison -> this one learns](https://github.com/dissendahl/flow/blob/master/examples/exp_configs/rl/multiagent/multiagent_ddpg.py)
+* Command to start DDPG training (executed within /examples dir): python train_ddpg.py multiagent_ddpg
+
+To understand, what happens within the experiment configuration and especially its lower part (policy configuration), I refer to the accompanying [tutorial notebook](https://github.com/dissendahl/flow/blob/master/tutorials/tutorial14_mutiagent.ipynb)
+
+
+### I appreciate every piece of information & help.
 
 
 
-
+------------------------------------------------------------------------------------------------------------------------------
 
 <img src="docs/img/square_logo.png" align="right" width="25%"/>
 
