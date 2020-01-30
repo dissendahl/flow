@@ -1,0 +1,57 @@
+Round 0, Return: {'center0': [-32.479037061618115], 'center1': [-32.479037061618115], 'center2': [-32.479037061618115], 'center3': [-32.479037061618115], 'center4': [-32.479037061618115], 'center5': [-32.479037061618115], 'center6': [-32.479037061618115], 'center7': [-32.479037061618115], 'center8': [-32.479037061618115]} for agent center0
+Round 0, Return: {'center0': [-32.479037061618115], 'center1': [-32.479037061618115], 'center2': [-32.479037061618115], 'center3': [-32.479037061618115], 'center4': [-32.479037061618115], 'center5': [-32.479037061618115], 'center6': [-32.479037061618115], 'center7': [-32.479037061618115], 'center8': [-32.479037061618115]} for agent center1
+Round 0, Return: {'center0': [-32.479037061618115], 'center1': [-32.479037061618115], 'center2': [-32.479037061618115], 'center3': [-32.479037061618115], 'center4': [-32.479037061618115], 'center5': [-32.479037061618115], 'center6': [-32.479037061618115], 'center7': [-32.479037061618115], 'center8': [-32.479037061618115]} for agent center2
+Round 0, Return: {'center0': [-32.479037061618115], 'center1': [-32.479037061618115], 'center2': [-32.479037061618115], 'center3': [-32.479037061618115], 'center4': [-32.479037061618115], 'center5': [-32.479037061618115], 'center6': [-32.479037061618115], 'center7': [-32.479037061618115], 'center8': [-32.479037061618115]} for agent center3
+Round 0, Return: {'center0': [-32.479037061618115], 'center1': [-32.479037061618115], 'center2': [-32.479037061618115], 'center3': [-32.479037061618115], 'center4': [-32.479037061618115], 'center5': [-32.479037061618115], 'center6': [-32.479037061618115], 'center7': [-32.479037061618115], 'center8': [-32.479037061618115]} for agent center4
+Round 0, Return: {'center0': [-32.479037061618115], 'center1': [-32.479037061618115], 'center2': [-32.479037061618115], 'center3': [-32.479037061618115], 'center4': [-32.479037061618115], 'center5': [-32.479037061618115], 'center6': [-32.479037061618115], 'center7': [-32.479037061618115], 'center8': [-32.479037061618115]} for agent center5
+Round 0, Return: {'center0': [-32.479037061618115], 'center1': [-32.479037061618115], 'center2': [-32.479037061618115], 'center3': [-32.479037061618115], 'center4': [-32.479037061618115], 'center5': [-32.479037061618115], 'center6': [-32.479037061618115], 'center7': [-32.479037061618115], 'center8': [-32.479037061618115]} for agent center6
+Round 0, Return: {'center0': [-32.479037061618115], 'center1': [-32.479037061618115], 'center2': [-32.479037061618115], 'center3': [-32.479037061618115], 'center4': [-32.479037061618115], 'center5': [-32.479037061618115], 'center6': [-32.479037061618115], 'center7': [-32.479037061618115], 'center8': [-32.479037061618115]} for agent center7
+Round 0, Return: {'center0': [-32.479037061618115], 'center1': [-32.479037061618115], 'center2': [-32.479037061618115], 'center3': [-32.479037061618115], 'center4': [-32.479037061618115], 'center5': [-32.479037061618115], 'center6': [-32.479037061618115], 'center7': [-32.479037061618115], 'center8': [-32.479037061618115]} for agent center8
+==== Summary of results ====
+Return:
+[9.155355256993948]
+For agent center0
+[[-32.479037061618115]]
+Average, std return: -32.479037061618115, 0.0 for agent center0
+For agent center1
+[[-32.479037061618115]]
+Average, std return: -32.479037061618115, 0.0 for agent center1
+For agent center2
+[[-32.479037061618115]]
+Average, std return: -32.479037061618115, 0.0 for agent center2
+For agent center3
+[[-32.479037061618115]]
+Average, std return: -32.479037061618115, 0.0 for agent center3
+For agent center4
+[[-32.479037061618115]]
+Average, std return: -32.479037061618115, 0.0 for agent center4
+For agent center5
+[[-32.479037061618115]]
+Average, std return: -32.479037061618115, 0.0 for agent center5
+For agent center6
+[[-32.479037061618115]]
+Average, std return: -32.479037061618115, 0.0 for agent center6
+For agent center7
+[[-32.479037061618115]]
+Average, std return: -32.479037061618115, 0.0 for agent center7
+For agent center8
+[[-32.479037061618115]]
+Average, std return: -32.479037061618115, 0.0 for agent center8
+
+Speed, mean (m/s):
+[9.155355256993948]
+Average, std: 9.155355256993948, 0.0
+
+Speed, std (m/s):
+[2.3875787435430658]
+Average, std: 2.3875787435430658, 0.0
+
+Outflows (veh/hr):
+[3888.0]
+Average, std: 3888.0, 0.0
+Inflows (veh/hr):
+[3628.8]
+Average, std: 3628.8, 0.0
+Throughput efficiency (veh/hr):
+[1.0714285714285714]
+Average, std: 1.0714285714285714, 0.0

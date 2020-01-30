@@ -1,0 +1,25 @@
+Round 0, Return: {'av': [-326.84417962168914]} for agent av
+==== Summary of results ====
+Return:
+[9.1554198609946]
+For agent av
+[[-326.84417962168914]]
+Average, std return: -326.84417962168914, 0.0 for agent av
+
+Speed, mean (m/s):
+[9.1554198609946]
+Average, std: 9.1554198609946, 0.0
+
+Speed, std (m/s):
+[2.387707082948375]
+Average, std: 2.387707082948375, 0.0
+
+Outflows (veh/hr):
+[3888.0]
+Average, std: 3888.0, 0.0
+Inflows (veh/hr):
+[3628.8]
+Average, std: 3628.8, 0.0
+Throughput efficiency (veh/hr):
+[1.0714285714285714]
+Average, std: 1.0714285714285714, 0.0
