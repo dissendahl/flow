@@ -1,13 +1,13 @@
 # Flow Examples
 
-Before continuing to the Flow examples, we recommend **installing Flow** by 
+Before continuing to the Flow examples, we recommend **installing Flow** by
 following the [installation instructions](
 https://flow.readthedocs.io/en/latest/flow_setup.html).
 
-The **examples** folder provides several examples demonstrating how 
-both non-RL simulation and RL-oriented simulatons can be setup and executed 
-within the Flow framework on a variety of traffic problems. These examples are 
-python files that may be executed either from terminal or via a text editor. 
+The **examples** folder provides several examples demonstrating how
+both non-RL simulation and RL-oriented simulatons can be setup and executed
+within the Flow framework on a variety of traffic problems. These examples are
+python files that may be executed either from terminal or via a text editor.
 For example, in order to execute the non-RL Ring example we run:
 
 ```shell
@@ -16,7 +16,7 @@ python simulate.py ring
 
 The examples are categorized into the following 3 sections:
 
-## non-RL examples 
+## non-RL examples
 
 These are examples of transportation network with vehicles
 following human-dynamical models of driving behavior using the traffic 
@@ -25,9 +25,9 @@ micro-simulator sumo and traffic macro-simulator Aimsun.
 To execute these examples, run
 
 ```shell
-python simulate.py EXP_CONFIG 
+python simulate.py EXP_CONFIG
 ```
-where `EXP_CONFIG` is the name of the experiment configuration file, as located in 
+where `EXP_CONFIG` is the name of the experiment configuration file, as located in
 `exp_configs/non_rl.`
 
 There are several *optional* arguments that can be added to the above command:
@@ -37,10 +37,10 @@ There are several *optional* arguments that can be added to the above command:
 ```
 where `--num_runs` indicates the number of simulations to run (default of `n` is 1), `--no_render` indicates whether to deactivate the simulation GUI during runtime (by default simulation GUI is active), `--aimsun` indicates whether to run the simulation using the simulator Aimsun (the default simulator is SUMO), and `--gen_emission` indicates whether to generate an emission file from the simulation.
 
-## RL examples based on RLlib 
+## RL examples based on RLlib
 
-These examples are similar networks as those mentioned in *non-RL examples*, but in the 
-presence of autonomous vehicle (AV) or traffic light agents 
+These examples are similar networks as those mentioned in *non-RL examples*, but in the
+presence of autonomous vehicle (AV) or traffic light agents
 being trained through RL algorithms provided by *RLlib*.
 
 To execute these examples, run
@@ -49,15 +49,15 @@ To execute these examples, run
  python train.py EXP_CONFIG
  (or python train.py EXP_CONFIG --rl_trainer RLlib)
 ```
-where `EXP_CONFIG` is the name of the experiment configuration file, as located in 
+where `EXP_CONFIG` is the name of the experiment configuration file, as located in
 `exp_configs/rl/singleagent` or  `exp_configs/rl/multiagent.`
 
 
-## RL examples based on stable_baselines 
+## RL examples based on stable_baselines
 
-These examples provide similar networks as those 
-mentioned in *non-RL examples*, but in the presence of autonomous vehicle (AV) or traffic 
-light agents being trained through RL algorithms provided by OpenAI *stable 
+These examples provide similar networks as those
+mentioned in *non-RL examples*, but in the presence of autonomous vehicle (AV) or traffic
+light agents being trained through RL algorithms provided by OpenAI *stable
 baselines*.
 
 To execute these examples, run
@@ -65,7 +65,7 @@ To execute these examples, run
 ```shell
  python train.py EXP_CONFIG --rl_trainer Stable-Baselines
 ```
-where `EXP_CONFIG` is the name of the experiment configuration file, as located in 
+where `EXP_CONFIG` is the name of the experiment configuration file, as located in
 `exp_configs/rl/singleagent.`
 
 Note that, currently, multiagent experiments are only supported through RLlib.
@@ -79,8 +79,8 @@ where `--num_cpus` indicates the number of CPUs to use (default of `n1` is 1), `
 
 ## Simulated Examples
 
-The following networks are available for simulation within flow. These examples are 
-all available as non-RL examples, while some of them are also available (with 
+The following networks are available for simulation within flow. These examples are
+all available as non-RL examples, while some of them are also available (with
 trainable variants) as RL examples, with RLlib or Stable Baselines.
 
 
@@ -88,7 +88,7 @@ trainable variants) as RL examples, with RLlib or Stable Baselines.
 
 Perform simulations of vehicles on the Oakland-San Francisco Bay Bridge.
 
-Unlike `bay_bridge.py`, `bay_bridge_toll.py` consists of vehicles being placed 
+Unlike `bay_bridge.py`, `bay_bridge_toll.py` consists of vehicles being placed
 only on the toll booth and sections of the road leading up to it.
 
 ![](https://raw.githubusercontent.com/flow-project/flow/master/docs/img/bay_bridge.gif)
@@ -139,7 +139,7 @@ point before exiting the network.
 
 ### minicity.py
 
-Example of modified mini city developed under a 
+Example of modified mini city developed under a
 [collaboration with University of Delaware](https://sites.google.com/view/iccps-policy-transfer),
 with human-driven vehicles.
 
