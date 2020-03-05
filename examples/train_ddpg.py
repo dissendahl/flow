@@ -145,6 +145,9 @@ def setup_exps_rllib(flow_params,
     config["num_workers"] = n_cpus
     config["train_batch_size"] = horizon * n_rollouts
     config["horizon"] = horizon
+    config["log_level"] = "DEBUG"
+    config["ignore_worker_failures"] = True
+    config["use_local_critic"] = True
 
     # save the flow params for replay
     flow_json = json.dumps(

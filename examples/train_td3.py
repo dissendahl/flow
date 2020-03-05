@@ -143,6 +143,8 @@ def setup_exps_rllib(flow_params,
     config["train_batch_size"] = horizon * n_rollouts
     config["horizon"] = horizon
     config["batch_mode"] = "complete_episodes"
+    config["log_level"] = "INFO"
+    config["ignore_worker_failures"] = True
 
     # save the flow params for replay
     flow_json = json.dumps(
@@ -164,7 +166,7 @@ def setup_exps_rllib(flow_params,
     # Register as rllib env
     register_env(gym_name, create_env)
     return alg_run, gym_name, config
-
+    
 
 if __name__ == "__main__":
     flags = parse_args(sys.argv[1:])

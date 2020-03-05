@@ -82,7 +82,7 @@ class MultiTrafficLightGridPOEnv(TrafficLightGridPOEnv, MultiEnv):
             return Discrete(2)
         else:
             return Box(
-                low=-1,
+                low=0,
                 high=1,
                 shape=(1,),
                 dtype=np.float32)
@@ -212,7 +212,7 @@ class MultiTrafficLightGridPOEnv(TrafficLightGridPOEnv, MultiEnv):
             else:
                 # convert values less than 0.0 to zero and above to 1. 0's
                 # indicate that we should not switch the direction
-                action = rl_action > 0.0
+                action = rl_action > 0.5
 
             if self.currently_yellow[i] == 1:  # currently yellow
                 self.last_change[i] += self.sim_step

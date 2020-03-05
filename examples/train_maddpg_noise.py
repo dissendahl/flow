@@ -160,22 +160,24 @@ def setup_exps_rllib(flow_params,
     config["num_workers"] = n_cpus
     config["train_batch_size"] = horizon * n_rollouts
     config["horizon"] = horizon
-    config["learning_starts"] = 100
-    config["tau"] = 0.1
-    config["critic_lr"]: 1e-1
-    config["actor_lr"]: 1e-1
-    config["target_network_update_freq"] = 2
+    config["learning_starts"] = 5000
+    config["tau"] = 5e-3
+    config["critic_lr"] = 1e-3
+    config["actor_lr"] = 1e-3
+    config["log_level"] = "INFO"
+    config["ignore_worker_failures"] = True
+    config["use_local_critic"] = False
 
         # === Exploration ===
-    exploration_config: {
+    exploration_config = {
         # DDPG uses OrnsteinUhlenbeck (stateful) noise to be added to NN-output
         # actions (after a possible pure random phase of n timesteps).
         "type": "OrnsteinUhlenbeckNoise",
         # For how many timesteps should we return completely random actions,
         # before we start adding (scaled) noise?
-        "random_timesteps": 1000,
+        "random_timesteps": 10000,
         # The OU-base scaling factor to always apply to action-added noise.
-        "ou_base_scale": 0.1,
+        "ou_base_scale": 1,
         # The OU theta param.
         "ou_theta": 0.15,
         # The OU sigma param.
@@ -187,7 +189,7 @@ def setup_exps_rllib(flow_params,
         # Timesteps over which to anneal scale (from initial to final values).
         "scale_timesteps": 10000,
     }
-    
+
     config["exploration_config"] = exploration_config
 
     # save the flow params for replay

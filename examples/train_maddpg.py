@@ -160,11 +160,16 @@ def setup_exps_rllib(flow_params,
     config["num_workers"] = n_cpus
     config["train_batch_size"] = horizon * n_rollouts
     config["horizon"] = horizon
-    config["learning_starts"] = 100
-    config["tau"] = 0.1
-    config["critic_lr"]: 1e-1
-    config["actor_lr"]: 1e-1
+    config["learning_starts"] = 15000
+    config["tau"] = 5e-3
+    config["critic_lr"]: 1e-3
+    config["actor_lr"]: 1e-3
     config["target_network_update_freq"] = 2
+    config["batch_mode"] = "complete_episodes"
+    config["log_level"] = "INFO"
+    config["ignore_worker_failures"] = True
+    config["use_local_critic"] = False
+
 
     # save the flow params for replay
     flow_json = json.dumps(

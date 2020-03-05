@@ -10,15 +10,16 @@ python3.6 setup.py develop
 ```shell
 scripts/setup_sumo_osx.sh
 #scripts/setup_sumo_ubuntu1804.sh
+
 export SUMO_HOME="$HOME/sumo_binaries/bin"
-export PATH="$SUMO_HOME:$PATH"
+export PATH="$SUMO_HOME:$PATH"     
+# verify that sumo is installed
+sumo --version
 ```
 
 ##### Install specific Ray version with refactored exploration noise API
 ```shell
-conda create --name maddpg python=3.6 -y
-conda activate maddpg
-python3.6 setup.py develop
+pip install https://ray-wheels.s3-us-west-2.amazonaws.com/master/2d97650b1e01c299eda8d973c3b7792b3ac85307/ray-0.9.0.dev0-cp36-cp36m-macosx_10_13_intel.whl
 ```
 
 ### Experiment documentation
@@ -41,7 +42,19 @@ See [rendered simulation](examples/results/renderings/td3.mov) and [simulation m
 5. MADDPG - No learning. Possible due to missing noise.
 ![See](examples/results/screen_shots/maddpg.png)
 
-6. MADDPG - Copied noise parameters from DDPG config
+Apparently there is a bug in the implementation. I talked to the code maintainer and together, we figured out that 1st exploration noise is missing and 2nd there is some weirdness within the action space output. Since the exploration noise implementation from DDPG was currently refactored into a genral purpose noise API within ray, I decided to wait and try the earliest dev release enabling MADDPG to use that API.
+
+6. MADDPG - Updated flair to dev version with noise implementation. Still no learning. Roll back to latest stable ray version.
+
+Observation: MADDPG action outputs are all 1. Now investigating, what is going wrong here.
+Trying out to rescale & shift action space from [-1,1] to [0,1] by changing the environment. Did not work.
+
+Roll front again.
+
+Observation: dictionary "learner" (part of the logging output) is empty.
+
+#### Next steps:
+1. Prepare rerun of 'python train_ddpg.py'
 
 ### Repo Documentation for Error Inspection - Fork to demonstrate problem of MADDPG algorithm applied to traffic light grid environmet.
 
@@ -64,7 +77,7 @@ python train_maddpg.py multiagent_maddpg
 python train_ddpg.py multiagent_ddpg
 ```
 
-To understand, what happens within the experiment configuration and especially its lower part (policy configuration), I refer to the accompanying [tutorial notebook](https://github.com/dissendahl/flow/blob/master/tutorials/tutorial14_mutiagent.ipynb)
+To understand, what happens within the experiment configuration and especially its lower part (policy configuration), I refer to the accompanying [tutorial noteboo
 
 ------------------------------------------------------------------------------------------------------------------------------
 # Flow
