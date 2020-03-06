@@ -206,7 +206,6 @@ def setup_exps_rllib(flow_params,
 
     # Register as rllib env
     register_env(gym_name, create_env)
-
     return alg_run, gym_name, config
 
 

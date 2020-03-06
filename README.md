@@ -1,4 +1,8 @@
 ### Installation & setup
+
+##### Install Miniconda if not installed
+https://docs.conda.io/en/latest/miniconda.html
+
 ##### Create environment & setup flow
 ```shell
 conda create --name maddpg python=3.6 -y
@@ -17,12 +21,13 @@ export PATH="$SUMO_HOME:$PATH"
 sumo --version
 ```
 
-##### Install specific Ray version with refactored exploration noise API
+##### Install Ray commit with refactored exploration noise API if needed
 ```shell
+pip uninstall ray -y
 pip install https://ray-wheels.s3-us-west-2.amazonaws.com/master/2d97650b1e01c299eda8d973c3b7792b3ac85307/ray-0.9.0.dev0-cp36-cp36m-macosx_10_13_intel.whl
 ```
 
-### Experiment documentation
+### Experiments documentation
 1. Non-RL actuated lights baseline - Can be run by:
 ```shell
 python simulate.py traffic_light_grid_edit
@@ -54,9 +59,15 @@ Roll front again.
 Observation: dictionary "learner" (part of the logging output) is empty.
 
 #### Next steps:
-1. Prepare rerun of 'python train_ddpg.py'
+1. Rerun DDPG experiments with multiple policies & MADDPG hyperparam search:
+```shell
+bash run_experiments.sh
+```
 
-### Repo Documentation for Error Inspection - Fork to demonstrate problem of MADDPG algorithm applied to traffic light grid environmet.
+2. Debug MADDPG code with code maintainer.
+
+
+### Repo Documentation for Error Inspection - Fork to demonstrate problem of MADDPG algorithm applied to traffic light grid environment.
 
 Hi there. This folk exists to demonstrate how the MADDPG implementation in rllib/contrib results in no learning when applied to a specific environment. To give some context: The flow project links traffic simulators with Rllib to setup RL based experiments to investigate with autonomous vehicles or traffic lights (More to see below in the original description).
 

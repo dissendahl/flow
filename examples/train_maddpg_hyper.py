@@ -12,24 +12,40 @@ import json
 import os
 import sys
 from time import strftime
+from flow.envs.multiagent.traffic_light_grid import MultiTrafficLightGridPOEnv
 
 from stable_baselines.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines import PPO2
 
 import ray
 from ray import tune
-from ray.tune import run_experiments
-from ray.tune.registry import register_env
+from ray.tune import run_experiments, grid_search
+from ray.tune.registry import register_env, register_trainable
 from flow.utils.registry import make_create_env
-try:
-    from ray.rllib.agents.agent import get_agent_class
-except ImportError:
-    from ray.rllib.agents.registry import get_agent_class
+
+from ray.rllib.contrib.maddpg.maddpg import MADDPGTrainer, DEFAULT_CONFIG
+
 from copy import deepcopy
 
 from flow.core.util import ensure_dir
 from flow.utils.registry import env_constructor
 from flow.utils.rllib import FlowParamsEncoder, get_flow_params
+
+class CustomStdOut(object):
+    def _log_result(self, result):
+        if result["training_iteration"] % 50 == 0:
+            try:
+                print("steps: {}, episodes: {}, mean episode reward: {}, agent episode reward: {}, time: {}".format(
+                    result["timesteps_total"],
+                    result["episodes_total"],
+                    result["episode_reward_mean"],
+                    result["policy_reward_mean"],
+                    round(result["time_total_s"] - self.cur_time, 3)
+                ))
+            except:
+                pass
+
+            self.cur_time = result["time_total_s"]
 
 
 def parse_args(args):
@@ -132,23 +148,49 @@ def setup_exps_rllib(flow_params,
     dict
         training configuration parameters
     """
+
+    # config params
+    alg_run = "contrib/MADDPG"
+
+    # config params
     horizon = flow_params['env'].horizon
 
-    alg_run = "DDPG"
-
-    agent_cls = get_agent_class(alg_run)
-    config = deepcopy(agent_cls._default_config)
-
-    # Tricks from TD3
-    config["twin_q"] = True
-    config["policy_delay"] = 2
-
+    # config params
+    config = deepcopy(DEFAULT_CONFIG)
     config["num_workers"] = n_cpus
     config["train_batch_size"] = horizon * n_rollouts
     config["horizon"] = horizon
-    config["log_level"] = "DEBUG"
+    config["learning_starts"] = 5000
+    config["tau"] = grid_search([1e-2, 5e-3, 1e-3, 5e-4, 1e-4])
+    config["critic_lr"] = grid_search([1e-2, 1e-3, 1e-4])
+    config["actor_lr"] = grid_search([1e-2, 1e-3, 1e-4])
+    config["log_level"] = "INFO"
     config["ignore_worker_failures"] = True
     config["use_local_critic"] = False
+
+        # === Exploration ===
+    exploration_config = {
+        # DDPG uses OrnsteinUhlenbeck (stateful) noise to be added to NN-output
+        # actions (after a possible pure random phase of n timesteps).
+        "type": "OrnsteinUhlenbeckNoise",
+        # For how many timesteps should we return completely random actions,
+        # before we start adding (scaled) noise?
+        "random_timesteps": 10000,
+        # The OU-base scaling factor to always apply to action-added noise.
+        "ou_base_scale": 1,
+        # The OU theta param.
+        "ou_theta": 0.15,
+        # The OU sigma param.
+        "ou_sigma": 0.2,
+        # The initial noise scaling factor.
+        "initial_scale": 1.0,
+        # The final noise scaling factor.
+        "final_scale": 1.0,
+        # Timesteps over which to anneal scale (from initial to final values).
+        "scale_timesteps": 10000,
+    }
+
+    config["exploration_config"] = exploration_config
 
     # save the flow params for replay
     flow_json = json.dumps(
@@ -156,14 +198,9 @@ def setup_exps_rllib(flow_params,
     config['env_config']['flow_params'] = flow_json
     config['env_config']['run'] = alg_run
 
-    # multiagent configuration
-    if policy_graphs is not None:
-        print("policy_graphs", policy_graphs)
-        config['multiagent'].update({'policies': policy_graphs})
-    if policy_mapping_fn is not None:
-        config['multiagent'].update({'policy_mapping_fn': tune.function(policy_mapping_fn)})
-    if policies_to_train is not None:
-        config['multiagent'].update({'policies_to_train': policies_to_train})
+    config['multiagent'].update({'policies': policy_graphs})
+    config['multiagent'].update({'policy_mapping_fn': policy_mapping_fn})
+    config['multiagent'].update({'policies_to_train': policies_to_train})
 
     create_env, gym_name = make_create_env(params=flow_params)
 
@@ -187,10 +224,15 @@ if __name__ == "__main__":
             "RLlib. Try running this experiment using RLlib: 'python train.py EXP_CONFIG'"
     else:
         assert False, "Unable to find experiment config!"
+
+        ## THIS ONE HERE
     if flags.rl_trainer == "RLlib":
         flow_params = submodule.flow_params
         n_cpus = submodule.N_CPUS
         n_rollouts = submodule.N_ROLLOUTS
+
+
+        # Imported from multiagent_ppo.py
         policy_graphs = getattr(submodule, "POLICY_GRAPHS", None)
         policy_mapping_fn = getattr(submodule, "policy_mapping_fn", None)
         policies_to_train = getattr(submodule, "policies_to_train", None)
@@ -211,48 +253,11 @@ if __name__ == "__main__":
                 "checkpoint_at_end": True,
                 "max_failures": 2,
                 "stop": {
-                    "training_iteration": 250,
+                    "training_iteration": 150,
                 },
             }
         })
 
-    elif flags.rl_trainer == "Stable-Baselines":
-        flow_params = submodule.flow_params
-        # Path to the saved files
-        exp_tag = flow_params['exp_tag']
-        result_name = '{}/{}'.format(exp_tag, strftime("%Y-%m-%d-%H:%M:%S"))
-
-        # Perform training.
-        print('Beginning training.')
-        model = run_model_stablebaseline(flow_params, flags.num_cpus, flags.rollout_size, flags.num_steps)
-
-        # Save the model to a desired folder and then delete it to demonstrate
-        # loading.
-        print('Saving the trained model!')
-        path = os.path.realpath(os.path.expanduser('~/baseline_results'))
-        ensure_dir(path)
-        save_path = os.path.join(path, result_name)
-        model.save(save_path)
-
-        # dump the flow params
-        with open(os.path.join(path, result_name) + '.json', 'w') as outfile:
-            json.dump(flow_params, outfile,
-                      cls=FlowParamsEncoder, sort_keys=True, indent=4)
-
-        # Replay the result by loading the model
-        print('Loading the trained model and testing it out!')
-        model = PPO2.load(save_path)
-        flow_params = get_flow_params(os.path.join(path, result_name) + '.json')
-        flow_params['sim'].render = True
-        env_constructor = env_constructor(params=flow_params, version=0)()
-        # The algorithms require a vectorized environment to run
-        eval_env = DummyVecEnv([lambda: env_constructor])
-        obs = eval_env.reset()
-        reward = 0
-        for _ in range(flow_params['env'].horizon):
-            action, _states = model.predict(obs)
-            obs, rewards, dones, info = eval_env.step(action)
-            reward += rewards
-        print('the final reward is {}'.format(reward))
+        print(trials)
     else:
         assert False, "rl_trainer should be either 'RLlib' or 'Stable-Baselines'!"
