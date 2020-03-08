@@ -56,7 +56,9 @@ Trying out to rescale & shift action space from [-1,1] to [0,1] by changing the 
 
 Roll front again.
 
-Observation: dictionary "learner" (part of the logging output) is empty.
+7. Edited maddpg_policy.py:L371
+
+The actor network outputed OneHotCategorical Distribution over batch because the MPE environment takes OneHotCategorical input.
 
 #### Next steps:
 1. Rerun DDPG experiments with multiple policies & MADDPG hyperparam search:

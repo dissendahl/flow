@@ -31,6 +31,9 @@ from flow.core.util import ensure_dir
 from flow.utils.registry import env_constructor
 from flow.utils.rllib import FlowParamsEncoder, get_flow_params
 
+NUM_CPUS = 1
+NUM_ITERATIONS = 250
+
 class CustomStdOut(object):
     def _log_result(self, result):
         if result["training_iteration"] % 50 == 0:
@@ -119,6 +122,7 @@ def run_model_stablebaseline(flow_params, num_cpus=1, rollout_size=50, num_steps
 def setup_exps_rllib(flow_params,
                      n_cpus,
                      n_rollouts,
+                     n_iterations,
                      policy_graphs=None,
                      policy_mapping_fn=None,
                      policies_to_train=None):
@@ -159,14 +163,19 @@ def setup_exps_rllib(flow_params,
     config = deepcopy(DEFAULT_CONFIG)
     config["num_workers"] = n_cpus
     config["train_batch_size"] = horizon * n_rollouts
+    config["learning_starts"] = config["train_batch_size"] * n_iterations * 0.1
     config["horizon"] = horizon
-    config["learning_starts"] = 5000
-    config["tau"] = grid_search([1e-2, 5e-3, 1e-3, 5e-4, 1e-4])
+    config["tau"] = grid_search([3e-3, 2e-3, 1e-3, 5e-4, 1e-4])
     config["critic_lr"] = grid_search([1e-2, 1e-3, 1e-4])
     config["actor_lr"] = grid_search([1e-2, 1e-3, 1e-4])
+    config["grad_norm_clipping"] = None
+    config["actor_feature_reg"] = None
     config["log_level"] = "INFO"
+
+    ##ToDo: Inspect if and which values to set for these two hyperparameters
     config["ignore_worker_failures"] = True
-    config["use_local_critic"] = False
+    config["use_local_critic"] = True
+
 
         # === Exploration ===
     exploration_config = {
@@ -230,6 +239,7 @@ if __name__ == "__main__":
         flow_params = submodule.flow_params
         n_cpus = submodule.N_CPUS
         n_rollouts = submodule.N_ROLLOUTS
+        n_iterations = submodule.N_ITERATIONS
 
 
         # Imported from multiagent_ppo.py
@@ -238,7 +248,7 @@ if __name__ == "__main__":
         policies_to_train = getattr(submodule, "policies_to_train", None)
 
         alg_run, gym_name, config = setup_exps_rllib(
-            flow_params, n_cpus, n_rollouts,
+            flow_params, n_cpus, n_rollouts, n_iterations,
             policy_graphs, policy_mapping_fn, policies_to_train)
 
         ray.init(num_cpus=n_cpus + 1)
@@ -253,7 +263,7 @@ if __name__ == "__main__":
                 "checkpoint_at_end": True,
                 "max_failures": 2,
                 "stop": {
-                    "training_iteration": 150,
+                    "training_iteration": n_iterations,
                 },
             }
         })
