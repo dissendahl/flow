@@ -65,8 +65,12 @@ The actor network outputed OneHotCategorical Distribution over batch because the
 ```shell
 bash run_experiments.sh
 ```
-
-2. Debug MADDPG code with code maintainer.
+2.a align policy network action space weirdness DONE.
+2.b align MADDPG code with DDPG -> apply action noise block.
+https://github.com/ray-project/ray/blob/master/rllib/agents/ddpg/ddpg_policy.py#L119
+onto action_sampler:
+https://github.com/ray-project/ray/blob/bc637a2546d1fc6bfe1ee6da00de50ee4c19d0f9/rllib/contrib/maddpg/maddpg_policy.py#L148
+3. Find out where the code differs compared to DDPG.
 
 
 ### Repo Documentation for Error Inspection - Fork to demonstrate problem of MADDPG algorithm applied to traffic light grid environment.
