@@ -168,7 +168,7 @@ def setup_exps_rllib(flow_params,
     config["tau"] = grid_search([3e-3, 2e-3, 1e-3, 5e-4, 1e-4])
     config["critic_lr"] = grid_search([1e-2, 1e-3, 1e-4])
     config["actor_lr"] = grid_search([1e-2, 1e-3, 1e-4])
-    config["grad_norm_clipping"] = None
+    config["grad_norm_clipping"] =
     config["actor_feature_reg"] = None
     config["log_level"] = "INFO"
 

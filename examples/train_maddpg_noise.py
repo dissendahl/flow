@@ -165,8 +165,11 @@ def setup_exps_rllib(flow_params,
     config["critic_lr"] = 1e-3
     config["actor_lr"] = 1e-3
     config["log_level"] = "INFO"
+    config["log_level"] = "INFO"
+
+    ##ToDo: Inspect if and which values to set for these two hyperparameters
     config["ignore_worker_failures"] = True
-    config["use_local_critic"] = False
+    config["use_local_critic"] = True
 
         # === Exploration ===
     exploration_config = {
