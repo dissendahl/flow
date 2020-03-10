@@ -1,3 +1,13 @@
+# Code repository - Traffic simulations using DDPG and MADDPG
+
+### Intro
+I want to apply MADDPG to an environment called traffic-light-grid in which RL traffic lights learn to route the traffic efficiently. They share the reward, the cumulative delay of all cars throughout the simulation steps in a fully cooperative manner. When I employ PPO or DDPG both algorithms learn how to route the traffic in one way or another, while MADDPG does not show any learning.
+
+So something with the experiment configuration or the contrib/MADDPG implementation must be off.
+Here are the experiment configs and how to execute them:
+
+To understand, what happens within the experiment configuration and especially its lower part (policy configuration), I refer to the accompanying [tutorial noteboo
+
 ### Installation & setup
 
 ##### Install Miniconda if not installed
@@ -49,53 +59,28 @@ See [rendered simulation](examples/results/renderings/td3.mov) and [simulation m
 
 Apparently there is a bug in the implementation. I talked to the code maintainer and together, we figured out that 1st exploration noise is missing and 2nd there is some weirdness within the action space output. Since the exploration noise implementation from DDPG was currently refactored into a genral purpose noise API within ray, I decided to wait and try the earliest dev release enabling MADDPG to use that API.
 
-6. MADDPG - Updated flair to dev version with noise implementation. Still no learning. Roll back to latest stable ray version.
+6. MADDPG - Updated flair to dev version 0.9.0 with noise implementation. Still no learning. Roll back to latest stable ray version.
 
 Observation: MADDPG action outputs are all 1. Now investigating, what is going wrong here.
 Trying out to rescale & shift action space from [-1,1] to [0,1] by changing the environment. Did not work.
 
 Roll front again.
 
-7. Edited maddpg_policy.py:L371
+7. Edited maddpg_policy.py
+[See](maddpg_policy.py)
 
-The actor network outputed OneHotCategorical Distribution over batch because the MPE environment takes OneHotCategorical input.
+* The actor network outputed OneHotCategorical Distribution over batch because the MPE environment takes OneHotCategorical input, which I manually removed.
+* Added exploration noise as seen in ddpg_policy.py in new dev verssion (0.9.0).
 
-#### Next steps:
-1. Rerun DDPG experiments with multiple policies & MADDPG hyperparam search:
+#### Next experiments - Performed on worker4 under saschas desk:
+1. Rerun DDPG experiments with multiple policies
 ```shell
-bash run_experiments.sh
+python3.6 train_ddpg_local_critic.py multiagent_ddpg_multi
 ```
-2.a align policy network action space weirdness DONE.
-2.b align MADDPG code with DDPG -> apply action noise block.
-https://github.com/ray-project/ray/blob/master/rllib/agents/ddpg/ddpg_policy.py#L119
-onto action_sampler:
-https://github.com/ray-project/ray/blob/bc637a2546d1fc6bfe1ee6da00de50ee4c19d0f9/rllib/contrib/maddpg/maddpg_policy.py#L148
-3. Find out where the code differs compared to DDPG.
+2. Run MADDPG with hyperparameter search and custom maddpg_policy.py
 
-
-### Repo Documentation for Error Inspection - Fork to demonstrate problem of MADDPG algorithm applied to traffic light grid environment.
-
-Hi there. This folk exists to demonstrate how the MADDPG implementation in rllib/contrib results in no learning when applied to a specific environment. To give some context: The flow project links traffic simulators with Rllib to setup RL based experiments to investigate with autonomous vehicles or traffic lights (More to see below in the original description).
-
-I want to apply MADDPG to an environment called traffic-light-grid in which RL traffic lights learn to route the traffic efficiently. They share the reward, the cumulative delay of all cars throughout the simulation steps in a fully cooperative manner. When I employ PPO or DDPG both algorithms learn how to route the traffic in one way or another, while MADDPG does not show any learning.
-[Here](https://github.com/dissendahl/flow/tree/master/learning_curves) you can see the learning curves.
-
-So something with the experiment configuration or the contrib/MADDPG implementation must be off.
-Here are the experiment configs and how to execute them:
-
-* [Training config for MADDPG -> this one does not learn at all](https://github.com/dissendahl/flow/blob/master/examples/exp_configs/rl/multiagent/multiagent_maddpg.py)
-* Command to start MADDPG training (executed from within /examples dir):
-```shell
-python train_maddpg.py multiagent_maddpg
-```
-* [Training configuration for DDPG for comparison -> this one learns](https://github.com/dissendahl/flow/blob/master/examples/exp_configs/rl/multiagent/multiagent_ddpg.py)
-* Command to start DDPG training (executed within /examples dir):
-```shell
-python train_ddpg.py multiagent_ddpg
-```
-
-To understand, what happens within the experiment configuration and especially its lower part (policy configuration), I refer to the accompanying [tutorial noteboo
-
+### Training results
+Training results for performed experiments can be found within [examples/results](examples/results).
 ------------------------------------------------------------------------------------------------------------------------------
 # Flow
 
