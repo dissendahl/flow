@@ -30,3 +30,5 @@ tensorflow==1.15.0
 tabulate==0.8.6
 tensorboardX
 ray==0.8.2
+colorama
+funcsigs

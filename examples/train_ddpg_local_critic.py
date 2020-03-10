@@ -199,7 +199,7 @@ if __name__ == "__main__":
             flow_params, n_cpus, n_rollouts,
             policy_graphs, policy_mapping_fn, policies_to_train)
 
-        ray.init(num_cpus=n_cpus + 1)
+        ray.init(temp_dir='results/experiment_runs', num_cpus=n_cpus + 1)
         trials = run_experiments({
             flow_params["exp_tag"]: {
                 "run": alg_run,
