@@ -1,12 +1,24 @@
 # Code repository - Traffic simulations using DDPG and MADDPG
 
+This repository deals with the practical application of the MADDPG multi-agent reinforcement learning model as part of the seminar "Advanced Topics in Reinforcement Learning" by the Neural Information Processing Group @ TU Berlin.
+
 ### Intro
-I want to apply MADDPG to an environment called traffic-light-grid in which RL traffic lights learn to route the traffic efficiently. They share the reward, the cumulative delay of all cars throughout the simulation steps in a fully cooperative manner. When I employ PPO or DDPG both algorithms learn how to route the traffic in one way or another, while MADDPG does not show any learning.
+I attempt to apply different configurations of the DDPG (Lillicrap et al.) and MADDPG (Lowe et al.) models onto a traffic light grid environment.
+The papers of these two papers can be found [here (MADDPG)](https://arxiv.org/abs/1706.02275) and [here (DDPG)](https://arxiv.org/abs/1509.02971).
 
-So something with the experiment configuration or the contrib/MADDPG implementation must be off.
-Here are the experiment configs and how to execute them:
+All experiments rely heavily on the traffic simulation project flow (see [flow-project.github.io](https://flow-project.github.io/)) and the reinforcement learning library RLlib (see [https://ray.readthedocs.io/en/latest/rllib-env.html](https://ray.readthedocs.io/en/latest/rllib-env.html)).
 
-To understand, what happens within the experiment configuration and especially its lower part (policy configuration), I refer to the accompanying [tutorial noteboo
+I folked the flow repository and started to define my experiments (see [examples/rl/multiagent](examples/rl/multiagent)) using the preexisting MultiTrafficLightGridPOEnv environment. Here is a gif ![gif](https://github.com/flow-project/flow/blob/master/docs/img/grid.gif), showing that environment type.
+In all experiments, the environment consists of a 9x9-grid with one lane in each direction and cars constantly entering from the borders of the simulation, traversing the grid left-right / up-down (or vice versa). The traffic grid, looks something like this ![image](https://github.com/dissendahl/flow/blob/master/docs/img/big_grid.png)
+
+At each of the nine crossing one traffic light agent switches the light phases, allowing either left-right or up-down traffic at each simulation step. The traffic lights are either toggled according to a fixed strategy (see baseline measurement) or by a reinforcement learning agent.
+
+The agents receive local observations about the speed and distance of the nearest cars as well as information about their neighbouring traffic lights [see](flow/envs/multiagent/traffic_light_grid.py:L90) (partially observable setting) and receive a reward signal about the average delay over all vehicles plus a penality for standing vehicles [see](flow/core/rewards.py:L179) in each timestep of the simulation.
+
+The agents' action spaces simply consist of one continous action value in the range [0,1].
+If it is below or equal 0.5, the environment will not change the light phase at a given intersection and if it is above 0.5, it will initiate a change of the traffic light phase.
+
+As documented below, I have run a baseline measurement, two runs with a single agent switching all lights and am currently running multi agent experiments on the provide hardware (thanks to Vaios) by the neural information processing group.
 
 ### Installation & setup
 
@@ -47,7 +59,7 @@ See [rendered simulation](examples/results/renderings/baseline.mov) and [simulat
 2. PPO - No artefacts stored.
 ![See](examples/results/screen_shots/ppo.png)
 
-3. TD3 - Converged to policy where all traffic lights toggle synchronously.
+3. TD3 (Improvement of DDPG) - Converged to policy where all traffic lights toggle synchronously.
 See [rendered simulation](examples/results/renderings/td3.mov) and [simulation metrics](examples/results/simulation_metrics/td3_225.txt).
 ![See](examples/results/screen_shots/td3.png)
 
@@ -59,18 +71,14 @@ See [rendered simulation](examples/results/renderings/td3.mov) and [simulation m
 
 Apparently there is a bug in the implementation. I talked to the code maintainer and together, we figured out that 1st exploration noise is missing and 2nd there is some weirdness within the action space output. Since the exploration noise implementation from DDPG was currently refactored into a genral purpose noise API within ray, I decided to wait and try the earliest dev release enabling MADDPG to use that API.
 
-6. MADDPG - Updated flair to dev version 0.9.0 with noise implementation. Still no learning. Roll back to latest stable ray version.
+6. MADDPG - Updated flair to version 0.9.0dev with noise implementation. Still no learning. Roll back to latest stable ray version.
 
-Observation: MADDPG action outputs are all 1. Now investigating, what is going wrong here.
-Trying out to rescale & shift action space from [-1,1] to [0,1] by changing the environment. Did not work.
+Observation: MADDPG action outputs are all 1. Next: Investigate what is going wrong here.
 
-Roll front again.
-
-7. Edited maddpg_policy.py
-[See](maddpg_policy.py)
-
+7. Improved maddpg_policy.py
 * The actor network outputed OneHotCategorical Distribution over batch because the MPE environment takes OneHotCategorical input, which I manually removed.
 * Added exploration noise as seen in ddpg_policy.py in new dev verssion (0.9.0).
+* [See](maddpg_policy.py)
 
 #### Next experiments - Performed on worker4 under saschas desk:
 1. Rerun DDPG experiments with multiple policies
@@ -89,7 +97,6 @@ Training results for performed experiments can be found within [examples/results
 See [our website](https://flow-project.github.io/) for more information on the application of Flow to several mixed-autonomy traffic scenarios. Other [results and videos](https://sites.google.com/view/ieee-tro-flow/home) are available as well.
 
 # More information
-
 - [Documentation](https://flow.readthedocs.org/en/latest/)
 - [Installation instructions](http://flow.readthedocs.io/en/latest/flow_setup.html)
 - [Tutorials](https://github.com/flow-project/flow/tree/master/tutorials)
