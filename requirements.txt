@@ -29,6 +29,8 @@ tensorflow-probability==0.7.0
 tensorflow==1.15.0
 tabulate==0.8.6
 tensorboardX
-ray==0.8.2
+ray
 colorama
 funcsigs
+click
+pyYAML
