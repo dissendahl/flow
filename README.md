@@ -8,12 +8,17 @@ The papers of these two papers can be found [here (MADDPG)](https://arxiv.org/ab
 
 All experiments rely heavily on the traffic simulation project flow (see [flow-project.github.io](https://flow-project.github.io/)) and the reinforcement learning library RLlib (see [https://ray.readthedocs.io/en/latest/rllib-env.html](https://ray.readthedocs.io/en/latest/rllib-env.html)).
 
-I folked the flow repository and started to define my experiments (see [examples/rl/multiagent](examples/rl/multiagent)) using the preexisting MultiTrafficLightGridPOEnv environment. Here is a gif ![gif](https://github.com/flow-project/flow/blob/master/docs/img/grid.gif), showing that environment type.
-In all experiments, the environment consists of a 9x9-grid with one lane in each direction and cars constantly entering from the borders of the simulation, traversing the grid left-right / up-down (or vice versa). The traffic grid, looks something like this ![image](https://github.com/dissendahl/flow/blob/master/docs/img/big_grid.png)
+I folked the flow repository and started to define my experiments (see [examples/rl/multiagent](examples/rl/multiagent)) using the preexisting MultiTrafficLightGridPOEnv environment. Here is a gif, showing that environment type:
+
+![gif](https://github.com/flow-project/flow/blob/master/docs/img/grid.gif)
+
+In all experiments, the environment consists of a 9x9-grid with one lane in each direction and cars constantly entering from the borders of the simulation, traversing the grid left-right / up-down (or vice versa). The traffic grid, looks something like this:
+
+ ![image](https://github.com/dissendahl/flow/blob/master/docs/img/big_grid.png)
 
 At each of the nine crossing one traffic light agent switches the light phases, allowing either left-right or up-down traffic at each simulation step. The traffic lights are either toggled according to a fixed strategy (see baseline measurement) or by a reinforcement learning agent.
 
-The agents receive local observations about the speed and distance of the nearest cars as well as information about their neighbouring traffic lights [see](flow/envs/multiagent/traffic_light_grid.py:L90) (partially observable setting) and receive a reward signal about the average delay over all vehicles plus a penality for standing vehicles [see](flow/core/rewards.py:L179) in each timestep of the simulation.
+The agents receive local observations about the speed and distance of the nearest cars as well as information about their neighbouring traffic lights [see flow/envs/multiagent/traffic_light_grid](flow/envs/multiagent/traffic_light_grid.py#L90) (partially observable setting) and receive a reward signal about the average delay over all vehicles plus a penality for standing vehicles [see flow/core/rewards.py](flow/core/rewards.py#L179) in each timestep of the simulation.
 
 The agents' action spaces simply consist of one continous action value in the range [0,1].
 If it is below or equal 0.5, the environment will not change the light phase at a given intersection and if it is above 0.5, it will initiate a change of the traffic light phase.
