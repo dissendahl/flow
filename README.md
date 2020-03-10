@@ -85,7 +85,7 @@ Observation: MADDPG action outputs are all 1. Next: Investigate what is going wr
 * Added exploration noise as seen in ddpg_policy.py in new dev verssion (0.9.0).
 * [See](maddpg_policy.py)
 
-#### Next experiments - Performed on worker4 under saschas desk:
+### Planned Experiments - (Currently executed on worker4):
 1. Rerun DDPG experiments with multiple policies
 ```shell
 python3.6 train_ddpg_local_critic.py multiagent_ddpg_multi
@@ -93,9 +93,13 @@ python3.6 train_ddpg_local_critic.py multiagent_ddpg_multi
 2. Run MADDPG with hyperparameter search and custom maddpg_policy.py
 
 ### Training results
+
 Training results for performed experiments can be found within [examples/results](examples/results).
 ------------------------------------------------------------------------------------------------------------------------------
-# Flow
+
+
+# Legacy Documentation before Folk
+## Flow
 
 [Flow](https://flow-project.github.io/) is a computational framework for deep RL and control experiments for traffic microsimulation.
 
