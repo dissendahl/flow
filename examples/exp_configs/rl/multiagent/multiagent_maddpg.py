@@ -13,7 +13,7 @@ from flow.utils.registry import make_create_env
 
 # Experiment parameters
 N_ROLLOUTS = 20  # number of rollouts per training iteration
-N_CPUS = 6  # number of parallel workers
+N_CPUS = 8 # number of parallel workers
 N_ITERATIONS = 150
 
 # Environment parameters
