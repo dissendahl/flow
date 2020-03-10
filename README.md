@@ -6,9 +6,9 @@ This repository deals with the practical application of the MADDPG multi-agent r
 I attempt to apply different configurations of the DDPG (Lillicrap et al.) and MADDPG (Lowe et al.) models onto a traffic light grid environment.
 The papers of these two papers can be found [here (MADDPG)](https://arxiv.org/abs/1706.02275) and [here (DDPG)](https://arxiv.org/abs/1509.02971).
 
-All experiments rely heavily on the traffic simulation project flow ( see [flow-project.github.io](https://flow-project.github.io/) ) and the reinforcement learning library RLlib ( see [https://ray.readthedocs.io/en/latest/rllib-env.html](https://ray.readthedocs.io/en/latest/rllib-env.html) ).
+All experiments rely heavily on the traffic simulation project flow ( [see flow-project.github.io](https://flow-project.github.io/) ) and the reinforcement learning library RLlib ( [ see https://ray.readthedocs.io/en/latest/rllib-env.html](https://ray.readthedocs.io/en/latest/rllib-env.html) ).
 
-I folked the flow repository and started to define my experiments ( here [examples/rl/multiagent/](https://github.com/dissendahl/flow/tree/master/examples/exp_configs/rl/multiagent) ) using the preexisting MultiTrafficLightGridPOEnv environment. Here is a gif, showing that environment type:
+I folked the flow repository and started to define my experiments ( [see examples/rl/multiagent/](https://github.com/dissendahl/flow/tree/master/examples/exp_configs/rl/multiagent) ) using the preexisting MultiTrafficLightGridPOEnv environment. Here is a gif, showing that environment type:
 
 ![gif](https://github.com/flow-project/flow/blob/master/docs/img/grid.gif)
 
@@ -92,9 +92,11 @@ python3.6 train_ddpg_local_critic.py multiagent_ddpg_multi
 ```
 2. Run MADDPG with hyperparameter search and custom maddpg_policy.py
 
+
 ### Training results
 
-Training results for performed experiments can be found within [examples/results](examples/results).
+All training results, model artefacts, learning curves, etc. for performed experiments are located within [examples/results](examples/results).
+
 ------------------------------------------------------------------------------------------------------------------------------
 
 
