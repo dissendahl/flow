@@ -139,7 +139,7 @@ class MADDPGTFPolicy(MADDPGPostprocessing, TFPolicy):
             getattr(tf.nn, config["critic_hidden_activation"]),
             scope="target_critic")
 
-        target_critic_masked = (1.0 - done_ph) * target_critic[:, 0])
+        target_critic_masked = (1.0 - done_ph) * target_critic[:, 0]
 
         # Build critic loss.
         td_error = tf.subtract(
@@ -147,7 +147,7 @@ class MADDPGTFPolicy(MADDPGPostprocessing, TFPolicy):
             tf.stop_gradient(
                 rew_ph + (config["gamma"]**config["n_step"])
                 * target_critic_masked )
-
+            )
         #
         critic_loss = tf.reduce_mean(td_error**2)
 
