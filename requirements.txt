@@ -34,3 +34,4 @@ colorama
 funcsigs
 click
 pyYAML
+gym

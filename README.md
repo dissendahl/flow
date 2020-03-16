@@ -61,41 +61,66 @@ python simulate.py traffic_light_grid_edit
 ```
 See [rendered simulation](examples/results/renderings/baseline.mov) and [simulation metrics](examples/results/simulation_metrics/baseline.txt).
 
-2. PPO - No artefacts stored.
+2. PPO / SingleAgentEnv / Single policy - No artefacts stored.
+```shell
+python train_ppo.py singleagnet_traffic_light_grid
+```
 ![See](examples/results/screen_shots/ppo.png)
 
-3. TD3 (Improvement of DDPG) - Converged to policy where all traffic lights toggle synchronously.
+3. TD3 (Successor of DDPG) / MutliAgentEnv / Single (shared) policy - Converged to policy where all traffic lights toggle synchronously.
+```shell
+python train_td3.py multiagent_ddpg
+```
 See [rendered simulation](examples/results/renderings/td3.mov) and [simulation metrics](examples/results/simulation_metrics/td3_225.txt).
 ![See](examples/results/screen_shots/td3.png)
 
-4. DDPG - One actor per traffic light / Mutual critic. Training terminated due to leaking experience buffer. See [rendered simulation](examples/results/renderings/ddpg_multi_policy.mov) and [simulation metrics](examples/results/simulation_metrics/ddpg_multi_agent_25.txt). When observing the simulation, we can see that this setup - employing local actor / mutual critic - leads to individual actions which we could argue demonstrates, that the setup picks up local optimisation signals while learning.
+4. DDPG / MultiAgentEnv / Multiple Policies / Shared Critic - Training terminated due to leaking experience buffer.
+```shell
+python train_ddpg.py multiagent_ddpg_multi
+```
+See [rendered simulation](examples/results/renderings/ddpg_multi_policy.mov) and [simulation metrics](examples/results/simulation_metrics/ddpg_multi_agent_25.txt). When observing the simulation, we can see that this setup - employing local actor / mutual critic - leads to individual actions which we could argue demonstrates, that the setup picks up local optimisation signals while learning.
 ![See](examples/results/screen_shots/ddpg_with_local_policies.png)
 
-5. MADDPG - No learning. Possible due to missing noise.
+5. MADDPG / MultiAgentEnv / Multiple Policies / Shared Critic - No learning occurs.
+```shell
+python train_maddpg.py multiagent_maddpg
+```
 ![See](examples/results/screen_shots/maddpg.png)
+Apparently there is a bug in the implementation. I talked to the code maintainer and together, we figured out that 1st exploration noise is missing and 2nd there is some weirdness within the action space output. Since the exploration noise implementation from DDPG was currently refactored into a general purpose noise API within ray, I decided to wait and try the earliest dev release enabling MADDPG to use that API.
 
-Apparently there is a bug in the implementation. I talked to the code maintainer and together, we figured out that 1st exploration noise is missing and 2nd there is some weirdness within the action space output. Since the exploration noise implementation from DDPG was currently refactored into a genral purpose noise API within ray, I decided to wait and try the earliest dev release enabling MADDPG to use that API.
+6. DDPG / MultiAgentEnv / Multiple Policies / Single Critic - Training terminated due to worker failure.
+```shell
+python train_ddpg_local_critic.py multiagent_ddpg_multi
+```
 
-6. MADDPG - Updated flair to version 0.9.0dev with noise implementation. Still no learning. Roll back to latest stable ray version.
+7. MADDPG / MultiAgentEnv / Multiple Policies / Shared Critic - Using adopted code.
+```shell
+python train_maddpg_noise.py multiagent_maddpg
+```
+* Updated flair to 0.9.0dev
+* Integrated OrnsteinUhlenbeck exploration noise.
+* Changed actor network output, which has been in the form of a OneHotCategorical Distribution over batch, to using sigmoid layer as seen in DDPG implementation.
 
-Observation: MADDPG action outputs are all 1. Next: Investigate what is going wrong here.
-
-7. Improved maddpg_policy.py
-* The actor network outputed OneHotCategorical Distribution over batch because the MPE environment takes OneHotCategorical input, which I manually removed.
-* Added exploration noise as seen in ddpg_policy.py in new dev verssion (0.9.0).
-* [See](maddpg_policy.py)
+8. MADDPG / MultiAgentEnv / Multiple Policies / Shared Critic / Hyperparameter Opt
 
 ### Planned Experiments - (Currently executed on worker4):
-1. Rerun DDPG experiments with multiple policies
-```shell
-python3.6 train_ddpg_local_critic.py multiagent_ddpg_multi
-```
-2. Run MADDPG with hyperparameter search and custom maddpg_policy.py
-
+1. Run MADDPG with hyperparameter search and custom maddpg_policy.py
 
 ### Training results
 
 All training results, model artefacts, learning curves, etc. for performed experiments are located within [examples/results](examples/results).
+
+### Additional information  
+* SUMO simulation with trained policy / policies, can be started with:
+```shell
+python3.6 ../flow/visualize/visualizer_rllib.py data/trained_ring 200 --horizon 2000 --gen_emission
+```
+
+* Simlinking sumo
+```shell
+ln -s /usr/local/opt/proj/lib/libproj.19.dylib /usr/local/opt/proj/lib/libproj.15.dylib
+```
+
 
 ------------------------------------------------------------------------------------------------------------------------------
 
